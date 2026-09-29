@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: document-rag-assistant-api
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: >-
+      cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+      --workers 1 --limit-concurrency 12 --timeout-keep-alive 5
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: DEBUG
+        value: "false"
+      # Free tier: 512 MB RAM / 0.1 CPU. Keep uploads small so PDF bytes
+      # + chunks + embeddings for one ingestion stay well under the limit.
+      - key: MAX_PDF_SIZE_MB
+        value: "10"
+      - key: EMBEDDING_BATCH_SIZE
+        value: "16"
+      - key: EMBEDDING_MODEL
+        value: openai/text-embedding-3-small
+      - key: EMBEDDING_DIMENSIONS
+        value: "384"
+      - key: LLM_API_BASE
+        value: https://openrouter.ai/api/v1
+      - key: FRONTEND_URL
+        value: http://localhost:5173
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        sync: false

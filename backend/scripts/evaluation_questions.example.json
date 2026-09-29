@@ -1,0 +1,7 @@
+[
+  {
+    "question": "What is the attendance requirement?",
+    "expected_keyword": "75%",
+    "expected_document": "Academic Regulations"
+  }
+]
